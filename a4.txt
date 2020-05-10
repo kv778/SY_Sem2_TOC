@@ -1,0 +1,39 @@
+%{
+#include<stdio.h>
+void yyerror(char*);
+int yylex();
+//file* yyin;	
+%}
+%token id sc int char float bl blval chval real as num comma nl
+%%
+s: type1|type2|type3|type4
+;
+type1:int varlist sc nl { printf("valid int variable declaration"); return 0;}
+/// for "int a" test case(without sc ;) nl is added at end otherwise it waits for input
+;
+type2:float varlist2 sc nl{ printf("valid float variable declaration");return 0;}
+;
+type3:char varlist3 sc nl{ printf("valid char variable declaration");return 0;}
+;
+type4:bl varlist4 sc nl{ printf("valid boolean variable declaration");return 0;}
+;
+varlist:  id | id comma varlist | id as num |id as num comma varlist | //this is for epsilon case (empty)
+;
+varlist2:  id | id comma varlist2 | id as real |id as real comma varlist2 |
+;
+varlist3: id | id comma varlist3 | id as chval | id as chval comma varlist3 |
+;
+varlist4: id | id comma varlist4 | id as blval | as blval comma varlist4 |
+;
+%%
+void yyerror(char *s )
+{ 
+fprintf(stderr, "error: %s\n",s);
+}
+int main()
+{
+//yyin=fopen("input.txt","r");
+yyparse();
+//fclose(yyin);
+	return 0;
+}
